@@ -49,6 +49,8 @@ set showmatch
 set splitbelow
 set splitright
 
+set mouse-=a
+
 set pastetoggle=<F2>
 map <F7> mzgg=G`z
 
@@ -74,11 +76,15 @@ let g:multi_cursor_quit_key='<Esc>'
 "          NeoMake           "
 """"""""""""""""""""""""""""""
 let g:neomake_open_list = 2
-let g:neomake_list_height = 6
-let g:neomake_jsx_enabled_makers = ['eslint']
-let g:neomake_jsx_eslint_exe = $PWD .'/node_modules/.bin/eslint'
-let g:neomake_javascript_enabled_makers = ['eslint']
-let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+let g:neomake_list_height = 5
+
+if filereadable($PWD .'/node_modules/.bin/eslint')
+  let g:neomake_jsx_enabled_makers = ['eslint']
+  let g:neomake_jsx_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+  let g:neomake_javascript_enabled_makers = ['eslint']
+  let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+endif
+
 autocmd! BufWritePost * Neomake
 
 """"""""""""""""""""""""""""""
@@ -165,11 +171,15 @@ if exists('$TMUX')
   let &t_te = "\<Esc>]2;". previous_title . "\<Esc>\\" . &t_te
 
   nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
+  "Remove this when they fix neovim
+  nnoremap <silent> <BS> :call TmuxOrSplitSwitch('h', 'L')<cr>
   nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
   nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
   nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
 else
   map <C-h> <C-w>h
+  "Remove this when they fix neovim
+  map <BS>  <C-w>h 
   map <C-j> <C-w>j
   map <C-k> <C-w>k
   map <C-l> <C-w>l
