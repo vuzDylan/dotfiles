@@ -3,6 +3,7 @@
 """"""""""""""""""""""""""""""
 call plug#begin('~/.config/nvim/plugged')
 
+Plug 'artur-shaik/vim-javacomplete2'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/context_filetype.vim'
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
@@ -14,6 +15,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'neomake/neomake'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'chriskempson/base16-vim'
+Plug 'tpope/vim-surround'
 
 call plug#end()
 
@@ -52,7 +54,7 @@ set splitright
 set mouse-=a
 
 set pastetoggle=<F2>
-map <F7> mzgg=G`z
+map <F7> mzgg=G`z:%s/\s\+$//e
 
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 let mapleader = ","
@@ -77,6 +79,8 @@ let g:multi_cursor_quit_key='<Esc>'
 """"""""""""""""""""""""""""""
 let g:neomake_open_list = 2
 let g:neomake_list_height = 5
+
+let g:neomake_java_enabled_makers = []
 
 if filereadable($PWD .'/node_modules/.bin/eslint')
   let g:neomake_jsx_enabled_makers = ['eslint']
@@ -105,6 +109,7 @@ augroup omnifuncs
   autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+  autocmd FileType java setlocal omnifunc=javacomplete#Complete
 augroup end
 
 if exists('g:plugs["tern_for_vim"]')
@@ -129,6 +134,10 @@ autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 "          JAVASCRIPT        "
 """"""""""""""""""""""""""""""
 let g:jsx_ext_required = 0
+""""""""""""""""""""""""""""""
+"          JAVA              "
+""""""""""""""""""""""""""""""
+autocmd BufNewFile,BufRead *.java :setlocal sw=4 ts=4 sts=4
 
 """"""""""""""""""""""""""""""
 "          HTML              "
@@ -173,7 +182,8 @@ if exists('$TMUX')
   nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
   "Remove this when they fix neovim
   nnoremap <silent> <BS> :call TmuxOrSplitSwitch('h', 'L')<cr>
-  nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
+  nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr> 
+  nnoremap <silent> <C-M> :call TmuxOrSplitSwitch('j', 'D')<cr>
   nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
   nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
 else
@@ -181,6 +191,7 @@ else
   "Remove this when they fix neovim
   map <BS>  <C-w>h 
   map <C-j> <C-w>j
+  map <C-M> <C-w>j
   map <C-k> <C-w>k
   map <C-l> <C-w>l
 endif
