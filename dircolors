@@ -206,10 +206,12 @@ EXEC 01;31  # Unix
 ### Text formats
 
 # Text that we can edit with a regular editor
-.txt 32
-.org 32
-.md 32
-.mkd 32
+.txt 33
+.org 33
+.md 33
+.mkd 33
+.json 33
+.xml 33
 
 # Source text
 .h 32
@@ -238,7 +240,6 @@ EXEC 01;31  # Unix
 .shtml 32
 .erb 32
 .haml 32
-.xml 32
 .rdf 32
 .css 32
 .sass 32
@@ -472,3 +473,8 @@ EXEC 01;31  # Unix
 .aes 34
 .enc 34
 .sqlite 34
+
+.dev.js 35
+.prod.js 35
+.qa.js 35
+.unit.js 35
