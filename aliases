@@ -17,3 +17,5 @@ alias ls="ls --color=always"
 alias grep="grep --color=always"
 alias egrep="egrep --color=always"
 alias server="python -m SimpleHTTPServer 8000"
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
