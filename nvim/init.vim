@@ -134,6 +134,7 @@ autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 "          JAVASCRIPT        "
 """"""""""""""""""""""""""""""
 let g:jsx_ext_required = 0
+let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
 """"""""""""""""""""""""""""""
 "          JAVA              "
 """"""""""""""""""""""""""""""
@@ -142,6 +143,7 @@ autocmd BufNewFile,BufRead *.java :setlocal sw=4 ts=4 sts=4
 """"""""""""""""""""""""""""""
 "          HTML              "
 """"""""""""""""""""""""""""""
+autocmd BufNewFile,BufRead *.ejs set filetype=html
 set matchpairs+=<:>
 let g:html_indent_tags = 'li\|p'
 
