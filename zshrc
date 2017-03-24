@@ -16,6 +16,8 @@ KEYTIMEOUT=1
 
 set -o vi
 
+ulimit -n 2048
+
 foreground-vi() {
   fg %nvim
 }

@@ -7,6 +7,7 @@ Plug 'artur-shaik/vim-javacomplete2'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'Shougo/context_filetype.vim'
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mattn/emmet-vim'
 Plug 'pangloss/vim-javascript'
@@ -16,6 +17,10 @@ Plug 'neomake/neomake'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'chriskempson/base16-vim'
 Plug 'tpope/vim-surround'
+Plug 'omnisharp/omnisharp-vim', { 'for': 'csharp', 'rtp': 'vim', 'do': 'cd server; xbuild' }
+Plug 'tpope/vim-dispatch'
+Plug 'OrangeT/vim-csharp'
+Plug 'othree/html5.vim'
 
 call plug#end()
 
@@ -91,6 +96,8 @@ endif
 
 autocmd! BufWritePost * Neomake
 
+let g:neomake_dot_maker = { 'exe': 'dotnet', 'args': ['build'] }
+
 """"""""""""""""""""""""""""""
 "          Deoplete          "
 """"""""""""""""""""""""""""""
@@ -111,13 +118,6 @@ augroup omnifuncs
   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
   autocmd FileType java setlocal omnifunc=javacomplete#Complete
 augroup end
-
-if exists('g:plugs["tern_for_vim"]')
-  let g:tern_show_argument_hints = 'on_hold'
-  let g:tern_show_signature_in_pum = 1
-  autocmd FileType javascript setlocal omnifunc=tern#Complete
-endif
-
 """"""""""""""""""""""""""""""
 "          MARKDOWN           "
 """"""""""""""""""""""""""""""
@@ -135,6 +135,13 @@ autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 """"""""""""""""""""""""""""""
 let g:jsx_ext_required = 0
 let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
+
+let g:tern_request_timeout = 1
+let g:tern_show_signature_in_pum = '0'
+let g:tern#filetypes = [ 'jsx', 'javascript.jsx' ]
+let g:tern#command = ["tern"]
+let g:tern#arguments = ["--persistent"]
+
 """"""""""""""""""""""""""""""
 "          JAVA              "
 """"""""""""""""""""""""""""""
