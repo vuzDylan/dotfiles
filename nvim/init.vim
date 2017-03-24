@@ -3,24 +3,36 @@
 """"""""""""""""""""""""""""""
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'artur-shaik/vim-javacomplete2'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/context_filetype.vim'
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+" Basic
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'mattn/emmet-vim'
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-surround'
+Plug 'chriskempson/base16-vim'
+Plug 'Shougo/context_filetype.vim'
 Plug 'christoomey/vim-tmux-navigator'
+
+" neovim basic
 Plug 'neomake/neomake'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'chriskempson/base16-vim'
-Plug 'tpope/vim-surround'
-Plug 'omnisharp/omnisharp-vim', { 'for': 'csharp', 'rtp': 'vim', 'do': 'cd server; xbuild' }
-Plug 'tpope/vim-dispatch'
-Plug 'OrangeT/vim-csharp'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+" JAVA
+Plug 'artur-shaik/vim-javacomplete2'
+
+" JAVASCRIPT
+Plug 'mxw/vim-jsx'
+Plug 'pangloss/vim-javascript'
+Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+
+" HTML
+Plug 'mattn/emmet-vim'
 Plug 'othree/html5.vim'
+
+" CSHARP
+Plug 'OrangeT/vim-csharp'
+Plug 'omnisharp/omnisharp-vim', { 'for': 'csharp', 'rtp': 'vim', 'do': 'cd server; xbuild' }
+
 
 call plug#end()
 
