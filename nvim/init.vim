@@ -31,8 +31,12 @@ Plug 'othree/html5.vim'
 
 " CSHARP
 Plug 'OrangeT/vim-csharp'
-Plug 'omnisharp/omnisharp-vim', { 'for': 'csharp', 'rtp': 'vim', 'do': 'cd server; xbuild' }
 
+"PYTHON
+Plug 'zchee/deoplete-jedi'
+
+" CPP
+Plug 'zchee/deoplete-clang'
 
 call plug#end()
 
@@ -116,11 +120,12 @@ let g:neomake_dot_maker = { 'exe': 'dotnet', 'args': ['build'] }
 let g:context_filetype#same_filetypes = {}
 let g:context_filetype#same_filetypes.js = 'jsx'
 let g:context_filetype#same_filetypes.jsx = 'js'
+
 let g:deoplete#enable_at_startup = 1
-if !exists('g:deoplete#omni#input_patterns')
-  let g:deoplete#omni#input_patterns = {}
-endif
+
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+
 augroup omnifuncs
   autocmd!
   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
@@ -130,8 +135,16 @@ augroup omnifuncs
   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
   autocmd FileType java setlocal omnifunc=javacomplete#Complete
 augroup end
+
 """"""""""""""""""""""""""""""
-"          MARKDOWN           "
+"          CPP               "
+""""""""""""""""""""""""""""""
+let g:deoplete#sources#clang = {}
+let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so'
+let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-3.8/lib/clang/'
+
+""""""""""""""""""""""""""""""
+"          MARKDOWN          "
 """"""""""""""""""""""""""""""
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 
