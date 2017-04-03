@@ -21,9 +21,12 @@ Plug 'artur-shaik/vim-javacomplete2'
 
 " JAVASCRIPT
 Plug 'mxw/vim-jsx'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 Plug 'pangloss/vim-javascript'
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install' }
+Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install -g tern' }
+Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
 
 " HTML
 Plug 'mattn/emmet-vim'
@@ -117,23 +120,32 @@ let g:neomake_dot_maker = { 'exe': 'dotnet', 'args': ['build'] }
 """"""""""""""""""""""""""""""
 "          Deoplete          "
 """"""""""""""""""""""""""""""
+let g:deoplete#enable_at_startup = 1
+set completeopt=longest,menuone,preview
+
+let g:deoplete#omni#functions = {}
 let g:context_filetype#same_filetypes = {}
 let g:context_filetype#same_filetypes.js = 'jsx'
 let g:context_filetype#same_filetypes.jsx = 'js'
 
-let g:deoplete#enable_at_startup = 1
+let g:deoplete#sources = {}
+let g:deoplete#sources['javascript'] = ['buffer', 'ultisnips', 'ternjs']
+let g:deoplete#sources['javascript.jsx'] = ['buffer', 'ultisnips', 'ternjs']
 
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 
+let g:deoplete#omni#functions.javascript = [
+  \ 'tern#Complete',
+  \ 'jspc#omni'
+\]
 
 augroup omnifuncs
   autocmd!
-  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
   autocmd FileType java setlocal omnifunc=javacomplete#Complete
+  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 augroup end
 
 """"""""""""""""""""""""""""""
@@ -158,12 +170,14 @@ autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 """"""""""""""""""""""""""""""
 "          JAVASCRIPT        "
 """"""""""""""""""""""""""""""
+let g:UltiSnipsExpandTrigger="<C-j>"
+
 let g:jsx_ext_required = 0
 let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
 
 let g:tern_request_timeout = 1
 let g:tern_show_signature_in_pum = '0'
-let g:tern#filetypes = [ 'jsx', 'javascript.jsx' ]
+let g:tern#filetypes = [ 'javascript', 'jsx', 'javascript.jsx' ]
 let g:tern#command = ["tern"]
 let g:tern#arguments = ["--persistent"]
 
@@ -194,7 +208,6 @@ let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|dist'
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
-
 
 """"""""""""""""""""""""""""""
 "          TMUX              "
