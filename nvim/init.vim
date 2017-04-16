@@ -51,6 +51,11 @@ if filereadable(expand("~/.vimrc_background"))
 	source ~/.vimrc_background
 endif
 
+" Must be bellow base16colorspace setup
+" Allows for transparent background
+hi Normal ctermbg=none
+hi NonText ctermbg=none
+
 inoremap jj <Esc>
 set timeoutlen=1000 ttimeoutlen=0
 
@@ -129,8 +134,8 @@ let g:context_filetype#same_filetypes.js = 'jsx'
 let g:context_filetype#same_filetypes.jsx = 'js'
 
 let g:deoplete#sources = {}
-let g:deoplete#sources['javascript'] = ['buffer', 'ultisnips', 'ternjs']
-let g:deoplete#sources['javascript.jsx'] = ['buffer', 'ultisnips', 'ternjs']
+let g:deoplete#sources['javascript'] = ['file', 'ultisnips', 'ternjs']
+let g:deoplete#sources['javascript.jsx'] = ['file', 'ultisnips', 'ternjs']
 
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 
