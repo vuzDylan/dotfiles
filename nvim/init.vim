@@ -235,18 +235,18 @@ if exists('$TMUX')
   let &t_te = "\<Esc>]2;". previous_title . "\<Esc>\\" . &t_te
 
   nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
-  "Remove this when they fix neovim
-  nnoremap <silent> <BS> :call TmuxOrSplitSwitch('h', 'L')<cr>
   nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr> 
-  nnoremap <silent> <C-M> :call TmuxOrSplitSwitch('j', 'D')<cr>
   nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
   nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
+  "Remove this when they fix neovim
+  nnoremap <silent> <C-M> :call TmuxOrSplitSwitch('j', 'D')<cr>
+  nnoremap <silent> <BS> :call TmuxOrSplitSwitch('h', 'L')<cr>
 else
   map <C-h> <C-w>h
-  "Remove this when they fix neovim
-  map <BS>  <C-w>h 
   map <C-j> <C-w>j
-  map <C-M> <C-w>j
   map <C-k> <C-w>k
   map <C-l> <C-w>l
+  "Remove this when they fix neovim
+  map <C-M> <C-w>j
+  map <BS>  <C-w>h 
 endif
