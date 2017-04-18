@@ -1,4 +1,4 @@
-export ZSH=/home/dylan/.oh-my-zsh
+export ZSH=$HOME/.oh-my-zsh
 
 ZSH_THEME="sunrise"
 COMPLETION_WAITING_DOTS="true"

@@ -40,6 +40,7 @@ Plug 'zchee/deoplete-jedi'
 
 " CPP
 Plug 'zchee/deoplete-clang'
+Plug 'Shougo/neoinclude.vim'
 
 call plug#end()
 
@@ -134,8 +135,8 @@ let g:context_filetype#same_filetypes.js = 'jsx'
 let g:context_filetype#same_filetypes.jsx = 'js'
 
 let g:deoplete#sources = {}
-let g:deoplete#sources['javascript'] = ['file', 'ultisnips', 'ternjs']
-let g:deoplete#sources['javascript.jsx'] = ['file', 'ultisnips', 'ternjs']
+let g:deoplete#sources['javascript'] = ['buffer', 'ultisnips', 'ternjs']
+let g:deoplete#sources['javascript.jsx'] = ['buffer', 'ultisnips', 'ternjs']
 
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 
@@ -159,6 +160,8 @@ augroup end
 let g:deoplete#sources#clang = {}
 let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so'
 let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-3.8/lib/clang/'
+let g:neoinclude#_paths='/home/dylan/freenect2/include'
+setlocal path+=/home/dylan/freenect2/include
 
 """"""""""""""""""""""""""""""
 "          MARKDOWN          "
