@@ -42,6 +42,10 @@ Plug 'zchee/deoplete-jedi'
 Plug 'zchee/deoplete-clang'
 Plug 'Shougo/neoinclude.vim'
 
+"RUST
+Plug 'rust-lang/rust.vim'
+Plug 'sebastianmarkow/deoplete-rust'
+
 call plug#end()
 
 syntax enable
@@ -162,6 +166,16 @@ let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so'
 let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-3.8/lib/clang/'
 let g:neoinclude#_paths='/home/dylan/freenect2/include'
 setlocal path+=/home/dylan/freenect2/include
+
+""""""""""""""""""""""""""""""
+"          RUST              "
+""""""""""""""""""""""""""""""
+let g:deoplete#sources#rust#racer_binary='/home/dylan/.cargo/bin/racer'
+let g:deoplete#sources#rust#rust_source_path='/home/dylan/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src'
+let g:deoplete#sources#rust#disable_keymap=1
+let g:deoplete#sources#rust#documentation_max_height=20
+nmap <buffer> gd <plug>DeopleteRustGoToDefinitionDefault
+nmap <buffer> K  <plug>DeopleteRustShowDocumentation
 
 """"""""""""""""""""""""""""""
 "          MARKDOWN          "
