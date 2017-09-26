@@ -21,7 +21,4 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias sudo="sudo "
 alias temp="watch -n 1 -d sensors"
-alias kellogg="ssh -i ~/.ssh/kellogg sse@kellogg.se.rit.edu"
-alias dank="cd"
-alias memes="ls"
 alias lines="git ls-files | xargs wc -l"

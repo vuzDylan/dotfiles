@@ -2,3 +2,5 @@
 undodir
 plugged
 .init*
+system.zsh
+plug.vim.old

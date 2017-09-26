@@ -28,12 +28,20 @@ bindkey '^Z' foreground-vi
 source ~/.aliases
 source ~/.functions
 
+# Custom setting per computer
+if [ -e $HOME/.system.zsh ]
+then
+  source $HOME/.system.zsh
+fi
+
+# Check if python
 if [ -e /usr/local/bin/virtualenvwrapper.sh ]
 then
   export WORKON_HOME=~/Envs
   source /usr/local/bin/virtualenvwrapper.sh
 fi
 
+# Check if node
 if [ -e $HOME/.nvm/nvm.sh ]
 then
   unset PREFIX
@@ -41,12 +49,13 @@ then
   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 fi
 
+# Check if ruby
 if [ -e $HOME/.rvm/bin ]
 then
   export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 fi
 
-# RUST
+# Check if rust
 if [ -e $HOME/.cargo/bin ]
 then
   export PATH="$PATH:$HOME/.cargo/bin"

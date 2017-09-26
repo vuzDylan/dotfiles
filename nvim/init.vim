@@ -3,7 +3,7 @@
 """"""""""""""""""""""""""""""
 call plug#begin('~/.config/nvim/plugged')
 
-" Basic
+"Basic
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-surround'
@@ -11,15 +11,12 @@ Plug 'chriskempson/base16-vim'
 Plug 'Shougo/context_filetype.vim'
 Plug 'christoomey/vim-tmux-navigator'
 
-" neovim basic
+"Neovim Basic
 Plug 'neomake/neomake'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
-" JAVA
-Plug 'artur-shaik/vim-javacomplete2'
-
-" JAVASCRIPT
+"JAVASCRIPT
 Plug 'mxw/vim-jsx'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -28,23 +25,23 @@ Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'], 'do': 'np
 Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install -g tern' }
 Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
 
-" HTML
+"HTML
 Plug 'mattn/emmet-vim'
 Plug 'othree/html5.vim'
-
-" CSHARP
-Plug 'OrangeT/vim-csharp'
 
 "PYTHON
 Plug 'zchee/deoplete-jedi'
 
-" CPP
+"CPP
 Plug 'zchee/deoplete-clang'
 Plug 'Shougo/neoinclude.vim'
 
 "RUST
 Plug 'rust-lang/rust.vim'
 Plug 'sebastianmarkow/deoplete-rust'
+
+"GraphQL
+Plug 'jparise/vim-graphql'
 
 call plug#end()
 
@@ -56,8 +53,8 @@ if filereadable(expand("~/.vimrc_background"))
 	source ~/.vimrc_background
 endif
 
-" Must be bellow base16colorspace setup
-" Allows for transparent background
+"Must be bellow base16colorspace setup
+"Allows for transparent background
 hi Normal ctermbg=none
 hi NonText ctermbg=none
 
@@ -68,7 +65,7 @@ set autoindent
 set expandtab
 set ts=2
 set shiftwidth=2
-set backspace=2 "backspace like most editors
+set backspace=2
 set shiftround
 
 set ignorecase
@@ -253,14 +250,14 @@ if exists('$TMUX')
   nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
   nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
   "Remove this when they fix neovim
-  nnoremap <silent> <C-M> :call TmuxOrSplitSwitch('j', 'D')<cr>
-  nnoremap <silent> <BS> :call TmuxOrSplitSwitch('h', 'L')<cr>
+  "nnoremap <silent> <C-M> :call TmuxOrSplitSwitch('j', 'D')<cr>
+  "nnoremap <silent> <BS> :call TmuxOrSplitSwitch('h', 'L')<cr>
 else
   map <C-h> <C-w>h
   map <C-j> <C-w>j
   map <C-k> <C-w>k
   map <C-l> <C-w>l
   "Remove this when they fix neovim
-  map <C-M> <C-w>j
-  map <BS>  <C-w>h 
+  "map <C-M> <C-w>j
+  "map <BS>  <C-w>h
 endif
