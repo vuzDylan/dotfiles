@@ -21,9 +21,9 @@ Plug 'mxw/vim-jsx'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'pangloss/vim-javascript'
+Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install' }
 Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install -g tern' }
-Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
 
 "HTML
 Plug 'mattn/emmet-vim'
@@ -127,33 +127,70 @@ let g:neomake_dot_maker = { 'exe': 'dotnet', 'args': ['build'] }
 """"""""""""""""""""""""""""""
 "          Deoplete          "
 """"""""""""""""""""""""""""""
-let g:deoplete#enable_at_startup = 1
-set completeopt=longest,menuone,preview
-
-let g:deoplete#omni#functions = {}
 let g:context_filetype#same_filetypes = {}
 let g:context_filetype#same_filetypes.js = 'jsx'
 let g:context_filetype#same_filetypes.jsx = 'js'
 
-let g:deoplete#sources = {}
-let g:deoplete#sources['javascript'] = ['buffer', 'ultisnips', 'ternjs']
-let g:deoplete#sources['javascript.jsx'] = ['buffer', 'ultisnips', 'ternjs']
+let g:deoplete#enable_at_startup = 1
+set completeopt=longest,menuone,preview
+let g:deoplete#enable_refresh_always = 1
+let g:deoplete#enable_camel_case = 1
+let g:deoplete#max_abbr_width = 35
+let g:deoplete#max_menu_width = 20
+let g:deoplete#tag#cache_limit_size = 800000
+let g:deoplete#file#enable_buffer_path = 1
+
+let g:deoplete#sources#jedi#statement_length = 30
+let g:deoplete#sources#jedi#show_docstring = 1
+let g:deoplete#sources#jedi#short_types = 1
+
+let g:deoplete#sources = get(g:, 'deoplete#sources', {})
+let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
 
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 
-let g:deoplete#omni#functions.javascript = [
-  \ 'tern#Complete',
-  \ 'jspc#omni'
-\]
 
-augroup omnifuncs
-  autocmd!
-  autocmd FileType java setlocal omnifunc=javacomplete#Complete
-  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-augroup end
+let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
+let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
+let g:deoplete#omni#functions.html = 'htmlcomplete#CompleteTags'
+let g:deoplete#omni#functions.markdown = 'htmlcomplete#CompleteTags'
+
+let g:deoplete#omni_patterns = get(g:, 'deoplete#omni_patterns', {})
+let g:deoplete#omni_patterns.html = '<[^>]*'
+
+call deoplete#custom#set('omni',          'mark', '⌾')
+call deoplete#custom#set('ternjs',        'mark', '⌁')
+call deoplete#custom#set('jedi',          'mark', '⌁')
+call deoplete#custom#set('vim',           'mark', '⌁')
+call deoplete#custom#set('neosnippet',    'mark', '⌘')
+call deoplete#custom#set('tag',           'mark', '⌦')
+call deoplete#custom#set('around',        'mark', '↻')
+call deoplete#custom#set('buffer',        'mark', 'ℬ')
+call deoplete#custom#set('tmux-complete', 'mark', '⊶')
+call deoplete#custom#set('syntax',        'mark', '♯')
+
+call deoplete#custom#set('vim',           'rank', 630)
+call deoplete#custom#set('ternjs',        'rank', 620)
+call deoplete#custom#set('jedi',          'rank', 610)
+call deoplete#custom#set('omni',          'rank', 600)
+call deoplete#custom#set('neosnippet',    'rank', 510)
+call deoplete#custom#set('member',        'rank', 500)
+call deoplete#custom#set('file_include',  'rank', 420)
+call deoplete#custom#set('file',          'rank', 410)
+call deoplete#custom#set('tag',           'rank', 400)
+call deoplete#custom#set('around',        'rank', 330)
+call deoplete#custom#set('buffer',        'rank', 320)
+call deoplete#custom#set('dictionary',    'rank', 310)
+call deoplete#custom#set('tmux-complete', 'rank', 300)
+call deoplete#custom#set('syntax',        'rank', 200)
+
+call deoplete#custom#set('_', 'converters', [
+	\ 'converter_remove_paren',
+	\ 'converter_remove_overlap',
+	\ 'converter_truncate_abbr',
+	\ 'converter_truncate_menu',
+	\ 'converter_auto_delimiter',
+	\ ])
 
 """"""""""""""""""""""""""""""
 "          CPP               "
@@ -196,7 +233,8 @@ let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
 
 let g:tern_request_timeout = 1
 let g:tern_show_signature_in_pum = '0'
-let g:tern#filetypes = [ 'javascript', 'jsx', 'javascript.jsx' ]
+let g:deoplete#sources#ternjs#types = 1
+
 let g:tern#command = ["tern"]
 let g:tern#arguments = ["--persistent"]
 

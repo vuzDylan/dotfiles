@@ -16,7 +16,7 @@ KEYTIMEOUT=1
 
 set -o vi
 
-ulimit -n 2048
+ulimit -n 4096
 
 foreground-vi() {
   fg %nvim
@@ -37,7 +37,9 @@ fi
 # Check if python
 if [ -e /usr/local/bin/virtualenvwrapper.sh ]
 then
-  export WORKON_HOME=~/Envs
+  mkdir -p ~/.virtualenvs
+  export VIRTUALENVWRAPPER_PYTHON='/usr/bin/python3'
+  export WORKON_HOME=$HOME/.virtualenvs
   source /usr/local/bin/virtualenvwrapper.sh
 fi
 

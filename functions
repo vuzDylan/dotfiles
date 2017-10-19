@@ -5,3 +5,7 @@ function slay () {
 function genRand () {
     < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;
 }
+
+function swag () {
+    git commit -am "$(curl http://whatthecommit.com/index.txt 2> /dev/null)"
+}
