@@ -3,45 +3,34 @@
 """"""""""""""""""""""""""""""
 call plug#begin('~/.config/nvim/plugged')
 
-"Basic
+" Syntax
+Plug 'mxw/vim-jsx'
+Plug 'chr4/nginx.vim'
+Plug 'othree/html5.vim'
+Plug 'rust-lang/rust.vim'
+Plug 'jparise/vim-graphql'
+Plug 'pangloss/vim-javascript'
+
+" Completion
+Plug 'Shougo/context_filetype.vim'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install -g tern' }
+Plug 'zchee/deoplete-jedi'
+Plug 'zchee/deoplete-clang'
+Plug 'Shougo/neoinclude.vim'
+Plug 'sebastianmarkow/deoplete-rust'
+
+" TMUX
+Plug 'christoomey/vim-tmux-navigator'
+
+" Other
+Plug 'mattn/emmet-vim'
+Plug 'neomake/neomake'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-surround'
 Plug 'chriskempson/base16-vim'
-Plug 'Shougo/context_filetype.vim'
-Plug 'christoomey/vim-tmux-navigator'
-
-"Neovim Basic
-Plug 'neomake/neomake'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
-"JAVASCRIPT
-Plug 'mxw/vim-jsx'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'pangloss/vim-javascript'
-Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
-Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install' }
-Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install -g tern' }
-
-"HTML
-Plug 'mattn/emmet-vim'
-Plug 'othree/html5.vim'
-
-"PYTHON
-Plug 'zchee/deoplete-jedi'
-
-"CPP
-Plug 'zchee/deoplete-clang'
-Plug 'Shougo/neoinclude.vim'
-
-"RUST
-Plug 'rust-lang/rust.vim'
-Plug 'sebastianmarkow/deoplete-rust'
-
-"GraphQL
-Plug 'jparise/vim-graphql'
 
 call plug#end()
 
@@ -58,9 +47,11 @@ endif
 hi Normal ctermbg=none
 hi NonText ctermbg=none
 
+" Use jj to enter command mode
 inoremap jj <Esc>
 set timeoutlen=1000 ttimeoutlen=0
 
+" Set up 2 space tabs
 set autoindent
 set expandtab
 set ts=2
@@ -68,28 +59,35 @@ set shiftwidth=2
 set backspace=2
 set shiftround
 
+" Search settings
 set ignorecase
 set smartcase
-set ruler
-set cursorline
-
-set number
-set relativenumber
-
 set hlsearch
 set showmatch
 
+" Current line highlight
+set ruler
+set cursorline
+
+" Relative numbering
+set number
+set relativenumber
+
+" Split settings
 set splitbelow
 set splitright
 
+" Remove mouse mode
 set mouse-=a
 
+" Paste toggle
 set pastetoggle=<F2>
+
+" F7 for reindent + trim whitespace
 map <F7> mzgg=G`z:%s/\s\+$//e
 
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" I dont use leaders but if I did it would be ,
 let mapleader = ","
-
 
 """"""""""""""""""""""""""""""
 "          Undo              "
@@ -127,6 +125,9 @@ let g:neomake_dot_maker = { 'exe': 'dotnet', 'args': ['build'] }
 """"""""""""""""""""""""""""""
 "          Deoplete          "
 """"""""""""""""""""""""""""""
+imap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+
+" Let js and jsx buffers be the same filetype
 let g:context_filetype#same_filetypes = {}
 let g:context_filetype#same_filetypes.js = 'jsx'
 let g:context_filetype#same_filetypes.jsx = 'js'
@@ -139,10 +140,6 @@ let g:deoplete#max_abbr_width = 35
 let g:deoplete#max_menu_width = 20
 let g:deoplete#tag#cache_limit_size = 800000
 let g:deoplete#file#enable_buffer_path = 1
-
-let g:deoplete#sources#jedi#statement_length = 30
-let g:deoplete#sources#jedi#show_docstring = 1
-let g:deoplete#sources#jedi#short_types = 1
 
 let g:deoplete#sources = get(g:, 'deoplete#sources', {})
 let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
@@ -198,8 +195,7 @@ call deoplete#custom#set('_', 'converters', [
 let g:deoplete#sources#clang = {}
 let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so'
 let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-3.8/lib/clang/'
-let g:neoinclude#_paths='/home/dylan/freenect2/include'
-setlocal path+=/home/dylan/freenect2/include
+let g:neoinclude#paths = {}
 
 """"""""""""""""""""""""""""""
 "          RUST              "
@@ -223,20 +219,22 @@ let python_highlight_all = 1
 autocmd BufWritePre *.py normal m`:%s/\s\+$//e``
 autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 
+let g:deoplete#sources#jedi#statement_length = 30
+let g:deoplete#sources#jedi#show_docstring = 1
+let g:deoplete#sources#jedi#short_types = 1
+
 """"""""""""""""""""""""""""""
 "          JAVASCRIPT        "
 """"""""""""""""""""""""""""""
-let g:UltiSnipsExpandTrigger="<C-j>"
-
 let g:jsx_ext_required = 0
-let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
-
-let g:tern_request_timeout = 1
-let g:tern_show_signature_in_pum = '0'
 let g:deoplete#sources#ternjs#types = 1
-
-let g:tern#command = ["tern"]
-let g:tern#arguments = ["--persistent"]
+let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
+let g:deoplete#sources#ternjs#filetypes = [
+	\ 'jsx',
+	\ 'javascript.jsx',
+	\ 'vue',
+	\ 'javascript'
+	\ ]
 
 """"""""""""""""""""""""""""""
 "          JAVA              "
@@ -246,9 +244,9 @@ autocmd BufNewFile,BufRead *.java :setlocal sw=4 ts=4 sts=4
 """"""""""""""""""""""""""""""
 "          HTML              "
 """"""""""""""""""""""""""""""
-autocmd BufNewFile,BufRead *.ejs set filetype=html
 set matchpairs+=<:>
 let g:html_indent_tags = 'li\|p'
+autocmd BufNewFile,BufRead *.ejs set filetype=html
 
 """"""""""""""""""""""""""""""
 "          TABS              "
@@ -287,15 +285,9 @@ if exists('$TMUX')
   nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr> 
   nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
   nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
-  "Remove this when they fix neovim
-  "nnoremap <silent> <C-M> :call TmuxOrSplitSwitch('j', 'D')<cr>
-  "nnoremap <silent> <BS> :call TmuxOrSplitSwitch('h', 'L')<cr>
 else
   map <C-h> <C-w>h
   map <C-j> <C-w>j
   map <C-k> <C-w>k
   map <C-l> <C-w>l
-  "Remove this when they fix neovim
-  "map <C-M> <C-w>j
-  "map <BS>  <C-w>h
 endif
