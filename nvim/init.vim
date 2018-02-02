@@ -25,7 +25,7 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " Other
 Plug 'mattn/emmet-vim'
-Plug 'neomake/neomake'
+Plug 'neomake/neomake', { 'commit': '63b02e3475a44eb91ea2444d1fe923363df4979c' }
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-surround'
