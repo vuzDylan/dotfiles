@@ -191,8 +191,8 @@ let g:neomake_dot_maker = { 'exe': 'dotnet', 'args': ['build'] }
 """"""""""""""""""""""""""""""
 let g:neoinclude#paths = {}
 let g:deoplete#sources#clang = {}
-let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so'
-let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-3.8/lib/clang/'
+let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-4.0/lib/libclang.so.1'
+let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-4.0/lib/clang/'
 
 """"""""""""""""""""""""""""""
 "          RUST              "
