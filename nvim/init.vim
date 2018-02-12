@@ -13,7 +13,7 @@ Plug 'pangloss/vim-javascript'
 
 " Completion
 Plug 'Shougo/context_filetype.vim'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins', 'tag': '4.0-serial' }
 Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install -g tern' }
 Plug 'zchee/deoplete-jedi'
 Plug 'zchee/deoplete-clang'
@@ -96,56 +96,28 @@ set undodir=~/.config/nvim/undodir
 set undofile
 
 """"""""""""""""""""""""""""""
-"          Multiple          "
+"          Filetype          "
 """"""""""""""""""""""""""""""
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_next_key='<C-d>'
-let g:multi_cursor_skip_key='<C-x>'
-let g:multi_cursor_quit_key='<Esc>'
-
-""""""""""""""""""""""""""""""
-"          NeoMake           "
-""""""""""""""""""""""""""""""
-let g:neomake_open_list = 2
-let g:neomake_list_height = 5
-
-let g:neomake_java_enabled_makers = []
-
-if filereadable($PWD .'/node_modules/.bin/eslint')
-  let g:neomake_jsx_enabled_makers = ['eslint']
-  let g:neomake_jsx_eslint_exe = $PWD .'/node_modules/.bin/eslint'
-  let g:neomake_javascript_enabled_makers = ['eslint']
-  let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
-endif
-
-autocmd! BufWritePost * Neomake
-
-let g:neomake_dot_maker = { 'exe': 'dotnet', 'args': ['build'] }
-
-""""""""""""""""""""""""""""""
-"          Deoplete          "
-""""""""""""""""""""""""""""""
-imap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-
-" Let js and jsx buffers be the same filetype
 let g:context_filetype#same_filetypes = {}
 let g:context_filetype#same_filetypes.js = 'jsx'
 let g:context_filetype#same_filetypes.jsx = 'js'
 
+""""""""""""""""""""""""""""""
+"          Deoplete          "
+""""""""""""""""""""""""""""""
 let g:deoplete#enable_at_startup = 1
+
+imap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+let g:deoplete#enable_camel_case = 1
 set completeopt=longest,menuone,preview
 let g:deoplete#enable_refresh_always = 1
-let g:deoplete#enable_camel_case = 1
-let g:deoplete#max_abbr_width = 35
-let g:deoplete#max_menu_width = 20
-let g:deoplete#tag#cache_limit_size = 800000
 let g:deoplete#file#enable_buffer_path = 1
+let g:deoplete#tag#cache_limit_size = 800000
 
 let g:deoplete#sources = get(g:, 'deoplete#sources', {})
 let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
-
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-
 
 let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
 let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
@@ -190,12 +162,37 @@ call deoplete#custom#set('_', 'converters', [
 	\ ])
 
 """"""""""""""""""""""""""""""
+"          Multiple          "
+""""""""""""""""""""""""""""""
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_next_key='<C-d>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<Esc>'
+
+""""""""""""""""""""""""""""""
+"          NeoMake           "
+""""""""""""""""""""""""""""""
+let g:neomake_open_list = 2
+let g:neomake_list_height = 5
+let g:neomake_java_enabled_makers = []
+
+if filereadable($PWD .'/node_modules/.bin/eslint')
+  let g:neomake_jsx_enabled_makers = ['eslint']
+  let g:neomake_jsx_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+  let g:neomake_javascript_enabled_makers = ['eslint']
+  let g:neomake_javascript_eslint_exe = $PWD .'/node_modules/.bin/eslint'
+endif
+
+autocmd! BufWritePost * Neomake
+let g:neomake_dot_maker = { 'exe': 'dotnet', 'args': ['build'] }
+
+""""""""""""""""""""""""""""""
 "          CPP               "
 """"""""""""""""""""""""""""""
+let g:neoinclude#paths = {}
 let g:deoplete#sources#clang = {}
 let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so'
 let g:deoplete#sources#clang#clang_header = '/usr/lib/llvm-3.8/lib/clang/'
-let g:neoinclude#paths = {}
 
 """"""""""""""""""""""""""""""
 "          RUST              "
@@ -229,12 +226,7 @@ let g:deoplete#sources#jedi#short_types = 1
 let g:jsx_ext_required = 0
 let g:deoplete#sources#ternjs#types = 1
 let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
-let g:deoplete#sources#ternjs#filetypes = [
-	\ 'jsx',
-	\ 'javascript.jsx',
-	\ 'vue',
-	\ 'javascript'
-	\ ]
+let g:deoplete#sources#ternjs#filetypes = [ 'jsx', 'javascript.jsx', 'vue', 'javascript' ]
 
 """"""""""""""""""""""""""""""
 "          JAVA              "
