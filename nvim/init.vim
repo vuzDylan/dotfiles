@@ -29,7 +29,7 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " Autocomplete
 Plug 'roxma/nvim-completion-manager'
-Plug 'mhartington/nvim-typescript'
+Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
 Plug 'roxma/ncm-clang'
 Plug 'fgrsnau/ncm-otherbuf'
 
