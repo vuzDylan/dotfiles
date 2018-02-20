@@ -31,11 +31,14 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'roxma/nvim-completion-manager'
 Plug 'mhartington/nvim-typescript'
 Plug 'roxma/ncm-clang'
+Plug 'fgrsnau/ncm-otherbuf'
 
 call plug#end()
 
 syntax enable
 filetype plugin indent on
+
+let mapleader = ","
 
 "Must be bellow base16colorspace setup
 "Allows for transparent background
@@ -86,9 +89,6 @@ set pastetoggle=<F2>
 " F7 for reindent + trim whitespace
 map <F7> mzgg=G`z:%s/\s\+$//e
 
-" I dont use leaders but if I did it would be ,
-let mapleader = ","
-
 " Let tab work in autocomlete menu
 imap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
@@ -99,12 +99,21 @@ set undofile
 " ALE ===================================================================================
 let g:ale_fixers = { 'javascript': ['eslint'] }
 let g:ale_fix_on_save = 1
+let g:ale_sign_error = '-'
+let g:ale_sign_warning = '*'
+let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_text_changed = 'normal'
 
 " MULTIPLE ==============================================================================
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-d>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
+
+" EMMET =================================================================================
+let g:user_emmet_mode='a'
+let g:user_emmet_leader_key='<leader>'  
+let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
 
 " MARKDOWN ==============================================================================
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
@@ -116,7 +125,6 @@ autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 
 " JAVASCRIPT ============================================================================
 let g:jsx_ext_required = 0
-let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
 let g:nvim_typescript#javascript_support = 1
 
 " JAVA ==================================================================================
@@ -138,12 +146,24 @@ nnoremap tl :tabnext<CR>
 nnoremap th :tabprev<CR>
 nnoremap tt :tabnew<CR>
 
+" NO ARROWS =============================================================================
+noremap <Up> <NOP>
+noremap <Down> <NOP>
+noremap <Left> <NOP>
+noremap <Right> <NOP>
+
+" SPLITS ================================================================================
+nnoremap <leader>v :vnew<CR>
+
 " CTRLP =================================================================================
 let g:ctrlp_map = '<c-n>'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|dist'
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+
+" SPELLING ==============================================================================
+nnoremap <leader>s :set spell!<cr>
 
 " TMUX ==================================================================================
 if exists('$TMUX')
