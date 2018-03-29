@@ -12,12 +12,15 @@ eval `dircolors ~/.dircolors`
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
+# ENABLE VI MODE
+bindkey -v
 KEYTIMEOUT=1
+bindkey '^?' backward-delete-char # Make backspace work
 
-set -o vi
-
+# MAX_NUM FILES OPENED
 ulimit -n 4096
 
+# ^Z for fg and bg vim
 foreground-vi() {
   fg %nvim
 }
@@ -62,6 +65,13 @@ if [ -e $HOME/.cargo/bin ]
 then
   export PATH="$PATH:$HOME/.cargo/bin"
   export RUST_SRC_PATH="$HOME/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src"
+fi
+
+# Check if go
+if [ -e /usr/lib/go-1.10/bin ]
+then
+  export GOPATH=$HOME/go
+  export PATH=$PATH:/usr/lib/go-1.10/bin:$GOPATH/bin
 fi
 
 BASE16_SHELL=$HOME/.config/base16-shell/

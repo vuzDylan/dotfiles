@@ -5,6 +5,7 @@ call plug#begin('~/.config/nvim/plugged')
 
 " Syntax plugin
 Plug 'sheerun/vim-polyglot'
+Plug 'jparise/vim-graphql'
 
 " Linting
 Plug 'w0rp/ale'
@@ -32,6 +33,7 @@ Plug 'roxma/nvim-completion-manager'
 Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
 Plug 'roxma/ncm-clang'
 Plug 'fgrsnau/ncm-otherbuf'
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 
 call plug#end()
 
@@ -52,7 +54,7 @@ hi NonText ctermbg=none
 
 " Use jj to enter command mode
 inoremap jj <Esc>
-set timeoutlen=1000 ttimeoutlen=0
+set timeoutlen=500 ttimeoutlen=0
 
 " Two space tabs
 set autoindent
@@ -98,11 +100,13 @@ set undofile
 
 " ALE ===================================================================================
 let g:ale_fixers = { 'javascript': ['eslint'] }
+let g:ale_linters = { 'graphql': ['gqlint'] }
 let g:ale_fix_on_save = 1
 let g:ale_sign_error = '-'
 let g:ale_sign_warning = '*'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_text_changed = 'normal'
+let g:ale_set_highlights = 1
 
 " MULTIPLE ==============================================================================
 let g:multi_cursor_use_default_mapping=0
@@ -122,6 +126,10 @@ autocmd BufNewFile,BufReadPost *.md set filetype=markdown
 let python_highlight_all = 1
 autocmd BufWritePre *.py normal m`:%s/\s\+$//e``
 autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
+
+" GO ====================================================================================
+let g:go_fmt_command = "goimports"
+let g:go_auto_type_info = 1
 
 " JAVASCRIPT ============================================================================
 let g:jsx_ext_required = 0
