@@ -29,11 +29,13 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'christoomey/vim-tmux-navigator'
 
 " Autocomplete
-Plug 'roxma/nvim-completion-manager'
-Plug 'mhartington/nvim-typescript', { 'do': ':UpdateRemotePlugins' }
-Plug 'roxma/ncm-clang'
-Plug 'fgrsnau/ncm-otherbuf'
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+Plug 'zchee/deoplete-jedi'
+Plug 'zchee/deoplete-clang'
+Plug 'Shougo/neoinclude.vim'
+Plug 'Shougo/context_filetype.vim'
+Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install -g tern' }
 
 call plug#end()
 
@@ -98,6 +100,67 @@ imap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 set undodir=~/.config/nvim/undodir
 set undofile
 
+" FILETYPE ==============================================================================
+let g:context_filetype#same_filetypes = {}
+let g:context_filetype#same_filetypes.js = 'jsx'
+let g:context_filetype#same_filetypes.jsx = 'js'
+
+" DEOPLETE ==============================================================================
+let g:deoplete#enable_at_startup = 1
+
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+let g:deoplete#enable_camel_case = 1
+set completeopt=longest,menuone,preview
+let g:deoplete#enable_refresh_always = 1
+let g:deoplete#file#enable_buffer_path = 1
+let g:deoplete#tag#cache_limit_size = 800000
+
+let g:deoplete#sources = get(g:, 'deoplete#sources', {})
+let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
+
+let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
+let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
+let g:deoplete#omni#functions.html = 'htmlcomplete#CompleteTags'
+let g:deoplete#omni#functions.markdown = 'htmlcomplete#CompleteTags'
+
+let g:deoplete#omni_patterns = get(g:, 'deoplete#omni_patterns', {})
+let g:deoplete#omni_patterns.html = '<[^>]*'
+
+call deoplete#custom#source('omni',          'mark', '⌾')
+call deoplete#custom#source('ternjs',        'mark', '⌁')
+call deoplete#custom#source('jedi',          'mark', '⌁')
+call deoplete#custom#source('vim',           'mark', '⌁')
+call deoplete#custom#source('neosnippet',    'mark', '⌘')
+call deoplete#custom#source('tag',           'mark', '⌦')
+call deoplete#custom#source('around',        'mark', '↻')
+call deoplete#custom#source('buffer',        'mark', 'ℬ')
+call deoplete#custom#source('tmux-complete', 'mark', '⊶')
+call deoplete#custom#source('syntax',        'mark', '♯')
+
+call deoplete#custom#source('vim',           'rank', 630)
+call deoplete#custom#source('ternjs',        'rank', 620)
+call deoplete#custom#source('jedi',          'rank', 610)
+call deoplete#custom#source('omni',          'rank', 600)
+call deoplete#custom#source('neosnippet',    'rank', 510)
+call deoplete#custom#source('member',        'rank', 500)
+call deoplete#custom#source('file_include',  'rank', 420)
+call deoplete#custom#source('file',          'rank', 410)
+call deoplete#custom#source('tag',           'rank', 400)
+call deoplete#custom#source('around',        'rank', 330)
+call deoplete#custom#source('buffer',        'rank', 320)
+call deoplete#custom#source('dictionary',    'rank', 310)
+call deoplete#custom#source('tmux-complete', 'rank', 300)
+call deoplete#custom#source('syntax',        'rank', 200)
+
+call deoplete#custom#source('_', 'converters', [
+	\ 'converter_remove_paren',
+	\ 'converter_remove_overlap',
+	\ 'converter_truncate_abbr',
+	\ 'converter_truncate_menu',
+	\ 'converter_auto_delimiter',
+	\ ])
+
 " ALE ===================================================================================
 let g:ale_fixers = { 'javascript': ['eslint'] }
 let g:ale_linters = { 'graphql': ['gqlint'] }
@@ -127,13 +190,11 @@ let python_highlight_all = 1
 autocmd BufWritePre *.py normal m`:%s/\s\+$//e``
 autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 
-" GO ====================================================================================
-let g:go_fmt_command = "goimports"
-let g:go_auto_type_info = 1
-
 " JAVASCRIPT ============================================================================
 let g:jsx_ext_required = 0
-let g:nvim_typescript#javascript_support = 1
+let g:deoplete#sources#ternjs#types = 1
+let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
+let g:deoplete#sources#ternjs#filetypes = [ 'jsx', 'javascript.jsx', 'vue', 'javascript' ]
 
 " JAVA ==================================================================================
 autocmd BufNewFile,BufRead *.java :setlocal sw=4 ts=4 sts=4
