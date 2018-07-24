@@ -14,7 +14,8 @@ Plug 'w0rp/ale'
 Plug 'mattn/emmet-vim'
 
 " Fuzzy finding
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 " Vim surround
 Plug 'tpope/vim-surround'
@@ -29,13 +30,14 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'christoomey/vim-tmux-navigator'
 
 " Autocomplete
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'zchee/deoplete-jedi'
-Plug 'zchee/deoplete-clang'
-Plug 'Shougo/neoinclude.vim'
+Plug 'wokalski/autocomplete-flow'
+
+" Filetypes
 Plug 'Shougo/context_filetype.vim'
-Plug 'carlitux/deoplete-ternjs', { 'for': ['javascript', 'javascript.jsx'], 'do': 'npm install -g tern' }
 
 call plug#end()
 
@@ -105,6 +107,11 @@ let g:context_filetype#same_filetypes = {}
 let g:context_filetype#same_filetypes.js = 'jsx'
 let g:context_filetype#same_filetypes.jsx = 'js'
 
+" NEOCLIENT ============================================================================
+let g:LanguageClient_serverCommands = {
+    \ 'javascript': ['flow-language-server', '--stdio'],
+    \ }
+
 " DEOPLETE ==============================================================================
 let g:deoplete#enable_at_startup = 1
 
@@ -127,49 +134,19 @@ let g:deoplete#omni#functions.markdown = 'htmlcomplete#CompleteTags'
 let g:deoplete#omni_patterns = get(g:, 'deoplete#omni_patterns', {})
 let g:deoplete#omni_patterns.html = '<[^>]*'
 
-call deoplete#custom#source('omni',          'mark', '⌾')
-call deoplete#custom#source('ternjs',        'mark', '⌁')
-call deoplete#custom#source('jedi',          'mark', '⌁')
-call deoplete#custom#source('vim',           'mark', '⌁')
-call deoplete#custom#source('neosnippet',    'mark', '⌘')
-call deoplete#custom#source('tag',           'mark', '⌦')
-call deoplete#custom#source('around',        'mark', '↻')
-call deoplete#custom#source('buffer',        'mark', 'ℬ')
-call deoplete#custom#source('tmux-complete', 'mark', '⊶')
-call deoplete#custom#source('syntax',        'mark', '♯')
-
-call deoplete#custom#source('vim',           'rank', 630)
-call deoplete#custom#source('ternjs',        'rank', 620)
-call deoplete#custom#source('jedi',          'rank', 610)
-call deoplete#custom#source('omni',          'rank', 600)
-call deoplete#custom#source('neosnippet',    'rank', 510)
-call deoplete#custom#source('member',        'rank', 500)
-call deoplete#custom#source('file_include',  'rank', 420)
-call deoplete#custom#source('file',          'rank', 410)
-call deoplete#custom#source('tag',           'rank', 400)
-call deoplete#custom#source('around',        'rank', 330)
-call deoplete#custom#source('buffer',        'rank', 320)
-call deoplete#custom#source('dictionary',    'rank', 310)
-call deoplete#custom#source('tmux-complete', 'rank', 300)
-call deoplete#custom#source('syntax',        'rank', 200)
-
-call deoplete#custom#source('_', 'converters', [
-	\ 'converter_remove_paren',
-	\ 'converter_remove_overlap',
-	\ 'converter_truncate_abbr',
-	\ 'converter_truncate_menu',
-	\ 'converter_auto_delimiter',
-	\ ])
-
 " ALE ===================================================================================
-let g:ale_fixers = { 'javascript': ['eslint'] }
-let g:ale_linters = { 'graphql': ['gqlint'] }
 let g:ale_fix_on_save = 1
 let g:ale_sign_error = '-'
 let g:ale_sign_warning = '*'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_text_changed = 'normal'
 let g:ale_set_highlights = 1
+
+let g:ale_javascript_flow_executable = 'flow'
+let g:ale_javascript_flow_use_global = 0
+let g:ale_javascript_flow_use_home_config = 0
+
+let g:ale_linters = {'javascript': ['eslint', 'flow']}
 
 " MULTIPLE ==============================================================================
 let g:multi_cursor_use_default_mapping=0
@@ -192,18 +169,11 @@ autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 
 " JAVASCRIPT ============================================================================
 let g:jsx_ext_required = 0
-let g:deoplete#sources#ternjs#types = 1
+let g:javascript_plugin_flow = 1
 let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
-let g:deoplete#sources#ternjs#filetypes = [ 'jsx', 'javascript.jsx', 'vue', 'javascript' ]
 
 " JAVA ==================================================================================
 autocmd BufNewFile,BufRead *.java :setlocal sw=4 ts=4 sts=4
-
-" C/CPP =================================================================================
-autocmd BufNewFile,BufRead *.c :setlocal sw=3 ts=3 sts=3
-autocmd BufNewFile,BufRead *.h :setlocal sw=3 ts=3 sts=3
-autocmd BufNewFile,BufRead *.cpp :setlocal sw=3 ts=3 sts=3
-autocmd BufNewFile,BufRead *.hpp :setlocal sw=3 ts=3 sts=3
 
 " HTML ==================================================================================
 set matchpairs+=<:>
@@ -224,12 +194,8 @@ noremap <Right> <NOP>
 " SPLITS ================================================================================
 nnoremap <leader>v :vnew<CR>
 
-" CTRLP =================================================================================
-let g:ctrlp_map = '<c-n>'
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git\|dist'
-let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+" FZF ===================================================================================
+nnoremap <C-n> :Files<CR>
 
 " SPELLING ==============================================================================
 nnoremap <leader>s :set spell!<cr>
