@@ -1,11 +1,13 @@
-""""""""""""""""""""""""""""""
-"          VIMPLUG           "
-""""""""""""""""""""""""""""""
+" VIMPLUG ===============================================================================
 call plug#begin('~/.config/nvim/plugged')
 
 " Syntax plugin
 Plug 'sheerun/vim-polyglot'
 Plug 'jparise/vim-graphql'
+
+" FZF
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 " Linting
 Plug 'w0rp/ale'
@@ -31,10 +33,11 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " Autocomplete
 Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 Plug 'zchee/deoplete-jedi'
 Plug 'wokalski/autocomplete-flow'
+Plug 'hhvm/vim-hack'
 
 " Filetypes
 Plug 'Shougo/context_filetype.vim'
@@ -44,7 +47,9 @@ call plug#end()
 syntax enable
 filetype plugin indent on
 
+" leader leader for omni func
 let mapleader = ","
+inoremap <leader>, <C-x><C-o>
 
 "Must be bellow base16colorspace setup
 "Allows for transparent background
@@ -109,13 +114,16 @@ let g:context_filetype#same_filetypes.jsx = 'js'
 
 " NEOCLIENT ============================================================================
 let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['flow-language-server', '--stdio'],
+    \ 'hh': [ 'hh_client', 'lsp' ],
     \ }
 
-" DEOPLETE ==============================================================================
-let g:deoplete#enable_at_startup = 1
+nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
 
+" DEOPLETE ==============================================================================
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+let g:deoplete#enable_at_startup = 1
 
 let g:deoplete#enable_camel_case = 1
 set completeopt=longest,menuone,preview
@@ -156,8 +164,27 @@ let g:multi_cursor_quit_key='<Esc>'
 
 " EMMET =================================================================================
 let g:user_emmet_mode='a'
-let g:user_emmet_leader_key='<leader>'  
 let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
+
+" HACK ==================================================================================
+let g:hack#enable = 0
+
+function! s:FTSetHH()
+  setlocal filetype=hh
+  runtime! syntax/php.vim
+  setlocal omnifunc=LanguageClient#complete
+endfunction
+
+function! s:FTDetectHH()
+  if getline(1) =~ '^<?hh'
+    call s:FTSetHH()
+  elseif getline(1) =~ '^#!\.\+hhvm' && getline(2) =~ '^<?hh'
+    call s:FTSetHH()
+  endif
+endfunction
+
+autocmd BufNewFile,BufRead *.hh call s:FTDetectHH()
+autocmd BufNewFile,BufRead *.php call s:FTDetectHH()
 
 " MARKDOWN ==============================================================================
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
