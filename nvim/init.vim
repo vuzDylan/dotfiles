@@ -1,6 +1,6 @@
+let g:python3_host_prog='/usr/bin/python3'
 " VIMPLUG ===============================================================================
 call plug#begin('~/.config/nvim/plugged')
-
 " Syntax plugin
 Plug 'sheerun/vim-polyglot'
 Plug 'jparise/vim-graphql'
@@ -15,32 +15,26 @@ Plug 'w0rp/ale'
 " Emmet for html and jsx
 Plug 'mattn/emmet-vim'
 
-" Fuzzy finding
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-
 " Vim surround
 Plug 'tpope/vim-surround'
 
 " Color schema
 Plug 'chriskempson/base16-vim'
 
+" Filetypes
+Plug 'Shougo/context_filetype.vim'
+
+" Autocomplete
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'hhvm/vim-hack'
+Plug 'flowtype/vim-flow'
+
 " Multiple cursors
 Plug 'terryma/vim-multiple-cursors'
 
 " TMUX Navigation
 Plug 'christoomey/vim-tmux-navigator'
-
-" Autocomplete
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
-Plug 'zchee/deoplete-jedi'
-Plug 'wokalski/autocomplete-flow'
-Plug 'hhvm/vim-hack'
-
-" Filetypes
-Plug 'Shougo/context_filetype.vim'
 
 call plug#end()
 
@@ -118,7 +112,9 @@ let g:LanguageClient_serverCommands = {
     \ }
 
 nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+nnoremap <silent> gd :call LanguageClient_textDocument_definition({
+      \ 'gotoCmd': 'vsplit',
+      \ })<CR>
 
 " DEOPLETE ==============================================================================
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
@@ -155,6 +151,7 @@ let g:ale_javascript_flow_use_global = 0
 let g:ale_javascript_flow_use_home_config = 0
 
 let g:ale_linters = {'javascript': ['eslint', 'flow']}
+let g:ale_fixers = {'javascript': ['prettier', 'eslint']}
 
 " MULTIPLE ==============================================================================
 let g:multi_cursor_use_default_mapping=0
@@ -167,7 +164,7 @@ let g:user_emmet_mode='a'
 let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
 
 " HACK ==================================================================================
-let g:hack#enable = 0
+let g:hack#enable = 0 "Turn off vim-hack because we use LSP
 
 function! s:FTSetHH()
   setlocal filetype=hh
@@ -195,9 +192,9 @@ autocmd BufWritePre *.py normal m`:%s/\s\+$//e``
 autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 
 " JAVASCRIPT ============================================================================
+let g:flow#enable = 0 "Don't type check on save vim-flow
 let g:jsx_ext_required = 0
-let g:javascript_plugin_flow = 1
-let g:user_emmet_settings = {'javascript.jsx': {'extends': 'jsx'}}
+let g:javascript_plugin_flow = 1 "Flow Syntax From Polyglot
 
 " JAVA ==================================================================================
 autocmd BufNewFile,BufRead *.java :setlocal sw=4 ts=4 sts=4
@@ -223,6 +220,7 @@ nnoremap <leader>v :vnew<CR>
 
 " FZF ===================================================================================
 nnoremap <C-n> :Files<CR>
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
 " SPELLING ==============================================================================
 nnoremap <leader>s :set spell!<cr>
@@ -244,11 +242,13 @@ if exists('$TMUX')
 
   nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
   nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr> 
+  nnoremap <silent> <C-M> :call TmuxOrSplitSwitch('j', 'D')<cr>
   nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
   nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
 else
   map <C-h> <C-w>h
   map <C-j> <C-w>j
+  map <C-M> <C-w>j
   map <C-k> <C-w>k
   map <C-l> <C-w>l
 endif

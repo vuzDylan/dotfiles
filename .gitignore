@@ -4,3 +4,4 @@ plugged
 .init*
 system.zsh
 plug.vim.old
+nvim/pack

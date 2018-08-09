@@ -22,3 +22,5 @@ alias pbpaste='xclip -selection clipboard -o'
 alias sudo="sudo "
 alias temp="watch -n 1 -d sensors"
 alias lines="git ls-files | xargs wc -l"
+alias ta="tmux a -t"
+alias tn="tmux new -s"

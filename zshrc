@@ -12,7 +12,9 @@ eval `dircolors ~/.dircolors`
 
 export PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_COMMAND='rg --files --follow --glob "!.git/*"'
+export EDITOR=$(command -v nvim)
+export VISUAL=$EDITOR
 
 # ENABLE VI MODE
 bindkey -v
