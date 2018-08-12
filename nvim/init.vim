@@ -1,10 +1,5 @@
-let g:python3_host_prog='/usr/bin/python3'
 " VIMPLUG ===============================================================================
 call plug#begin('~/.config/nvim/plugged')
-" Syntax plugin
-Plug 'sheerun/vim-polyglot'
-Plug 'jparise/vim-graphql'
-
 " FZF
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -21,20 +16,27 @@ Plug 'tpope/vim-surround'
 " Color schema
 Plug 'chriskempson/base16-vim'
 
-" Filetypes
-Plug 'Shougo/context_filetype.vim'
-
-" Autocomplete
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'hhvm/vim-hack'
-Plug 'flowtype/vim-flow'
-
 " Multiple cursors
 Plug 'terryma/vim-multiple-cursors'
 
 " TMUX Navigation
 Plug 'christoomey/vim-tmux-navigator'
+
+" Hover
+Plug 'RRethy/vim-illuminate'
+
+" Syntax plugin
+Plug 'sheerun/vim-polyglot'
+Plug 'jparise/vim-graphql'
+Plug 'hhvm/vim-hack'
+
+" Autocomplete
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'wellle/tmux-complete.vim'
+
+" Filetypes
+Plug 'Shougo/context_filetype.vim'
 
 call plug#end()
 
@@ -109,12 +111,11 @@ let g:context_filetype#same_filetypes.jsx = 'js'
 " NEOCLIENT ============================================================================
 let g:LanguageClient_serverCommands = {
     \ 'hh': [ 'hh_client', 'lsp' ],
+    \ 'javascript.jsx': [ 'flow', 'lsp' ],
     \ }
 
 nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient_textDocument_definition({
-      \ 'gotoCmd': 'vsplit',
-      \ })<CR>
+nnoremap <silent> gd :call LanguageClient_textDocument_definition({ 'gotoCmd': 'vsplit' })<CR>
 
 " DEOPLETE ==============================================================================
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
@@ -127,9 +128,6 @@ let g:deoplete#enable_refresh_always = 1
 let g:deoplete#file#enable_buffer_path = 1
 let g:deoplete#tag#cache_limit_size = 800000
 
-let g:deoplete#sources = get(g:, 'deoplete#sources', {})
-let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
-
 let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
 let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
 let g:deoplete#omni#functions.html = 'htmlcomplete#CompleteTags'
@@ -137,6 +135,26 @@ let g:deoplete#omni#functions.markdown = 'htmlcomplete#CompleteTags'
 
 let g:deoplete#omni_patterns = get(g:, 'deoplete#omni_patterns', {})
 let g:deoplete#omni_patterns.html = '<[^>]*'
+
+call deoplete#custom#source('LanguageClient', 'mark', '⌁')
+call deoplete#custom#source('omni', 'mark', '⌾')
+call deoplete#custom#source('member', 'mark', '.')
+call deoplete#custom#source('around', 'mark', '↻')
+call deoplete#custom#source('file', 'mark', 'F')
+call deoplete#custom#source('tag', 'mark', '⌦')
+call deoplete#custom#source('buffer', 'mark', 'ℬ')
+call deoplete#custom#source('tmux-complete', 'mark', '⊶')
+call deoplete#custom#source('syntax', 'mark', '♯')
+
+call deoplete#custom#source('LanguageClient', 'rank', 700)
+call deoplete#custom#source('omni', 'rank', 600)
+call deoplete#custom#source('member', 'rank', 550)
+call deoplete#custom#source('around', 'rank', 400)
+call deoplete#custom#source('file', 'rank', 500)
+call deoplete#custom#source('tag', 'rank', 450)
+call deoplete#custom#source('buffer', 'rank', 350)
+call deoplete#custom#source('tmux-complete', 'rank', 300)
+call deoplete#custom#source('syntax', 'rank', 200)
 
 " ALE ===================================================================================
 let g:ale_fix_on_save = 1
@@ -219,6 +237,7 @@ noremap <Right> <NOP>
 nnoremap <leader>v :vnew<CR>
 
 " FZF ===================================================================================
+let g:fzf_layout = { 'down': '~25%' }
 nnoremap <C-n> :Files<CR>
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
