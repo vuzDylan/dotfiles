@@ -22,9 +22,6 @@ Plug 'terryma/vim-multiple-cursors'
 " TMUX Navigation
 Plug 'christoomey/vim-tmux-navigator'
 
-" Hover
-Plug 'RRethy/vim-illuminate'
-
 " Syntax plugin
 Plug 'sheerun/vim-polyglot'
 Plug 'jparise/vim-graphql'
@@ -42,10 +39,6 @@ call plug#end()
 
 syntax enable
 filetype plugin indent on
-
-" leader leader for omni func
-let mapleader = ","
-inoremap <leader>, <C-x><C-o>
 
 "Must be bellow base16colorspace setup
 "Allows for transparent background
@@ -233,16 +226,19 @@ noremap <Down> <NOP>
 noremap <Left> <NOP>
 noremap <Right> <NOP>
 
-" SPLITS ================================================================================
-nnoremap <leader>v :vnew<CR>
-
 " FZF ===================================================================================
 let g:fzf_layout = { 'down': '~25%' }
 nnoremap <C-n> :Files<CR>
 command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
-" SPELLING ==============================================================================
+" LEADER ================================================================================
+let mapleader = ","
+
+inoremap <leader>, <C-x><C-o>
+
+nnoremap <leader>v :vnew<CR>
 nnoremap <leader>s :set spell!<cr>
+nnoremap  <leader>/ /<C-r><C-w><CR>N
 
 " TMUX ==================================================================================
 if exists('$TMUX')
