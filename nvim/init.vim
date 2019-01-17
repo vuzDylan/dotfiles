@@ -1,3 +1,5 @@
+let g:python3_host_prog='/home/vuzdylan/virtualenvs/neovim/bin/python'
+
 " VIMPLUG ===============================================================================
 call plug#begin('~/.config/nvim/plugged')
 " FZF
@@ -157,12 +159,21 @@ let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_text_changed = 'normal'
 let g:ale_set_highlights = 1
 
+let g:ale_hack_hack_executable = 'hh'
 let g:ale_javascript_flow_executable = 'flow'
 let g:ale_javascript_flow_use_global = 0
 let g:ale_javascript_flow_use_home_config = 0
 
-let g:ale_linters = {'javascript': ['eslint', 'flow']}
-let g:ale_fixers = {'javascript': ['prettier', 'eslint']}
+let g:ale_linters = {
+\   'javascript': ['eslint', 'flow'],
+\   'hh': ['hack', 'aurora'],
+\}
+
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'javascript': ['prettier', 'eslint'],
+\   'hh': ['hackfmt'],
+\}
 
 " MULTIPLE ==============================================================================
 let g:multi_cursor_use_default_mapping=0
@@ -203,7 +214,6 @@ autocmd BufWritePre *.py normal m`:%s/\s\+$//e``
 autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 
 " JAVASCRIPT ============================================================================
-let g:flow#enable = 0 "Don't type check on save vim-flow
 let g:jsx_ext_required = 0
 let g:javascript_plugin_flow = 1 "Flow Syntax From Polyglot
 
@@ -236,9 +246,10 @@ let mapleader = ","
 
 inoremap <leader>, <C-x><C-o>
 
+nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>v :vnew<CR>
 nnoremap <leader>s :set spell!<cr>
-nnoremap  <leader>/ /<C-r><C-w><CR>N
+nnoremap <leader>/ /<C-r><C-w><CR>N
 
 " TMUX ==================================================================================
 if exists('$TMUX')
@@ -256,14 +267,12 @@ if exists('$TMUX')
   let &t_te = "\<Esc>]2;". previous_title . "\<Esc>\\" . &t_te
 
   nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
-  nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr> 
-  nnoremap <silent> <C-M> :call TmuxOrSplitSwitch('j', 'D')<cr>
+  nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
   nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
   nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
 else
   map <C-h> <C-w>h
   map <C-j> <C-w>j
-  map <C-M> <C-w>j
   map <C-k> <C-w>k
   map <C-l> <C-w>l
 endif
