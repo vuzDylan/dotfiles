@@ -1,5 +1,9 @@
-[user]
-	email = vuzdylan@gmail.com
-	name = Dylan Vuz
+[http]
+  proxy = fwdproxy:8080
+[https]
+  proxy = fwdproxy:8080
 [core]
-	editor = vim
+	editor = nvim
+[user]
+	name = Dylan Vuz
+	email = vuzdylan@gmail.com
