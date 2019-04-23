@@ -49,6 +49,10 @@ if filereadable(expand("~/.vimrc_background"))
 	source ~/.vimrc_background
 endif
 
+if has("termguicolors")
+  set termguicolors
+endif
+
 hi Normal ctermbg=none
 hi NonText ctermbg=none
 
@@ -175,6 +179,21 @@ let g:ale_fixers = {
 \   'hh': ['hackfmt'],
 \}
 
+call ale#Set('eslint_exec', '/usr/local/fbpkg/nuclide/nuclide-node/latest/node-v8.9.3-linux-x64/bin/node')
+
+function! ale#handlers#eslint#GetExecutable(buffer) abort
+    return ale#Var(a:buffer, 'eslint_exec')
+endfunction
+
+call ale#linter#Define('javascript', {
+\   'name': 'eslint-lsp',
+\   'lsp': 'stdio',
+\   'executable_callback': 'ale#handlers#eslint#GetExecutable',
+\   'command': '%e /usr/local/fbpkg/nuclide/nuclide-server/production/pkg/fb-eslint-server/src/index-entry.js',
+\   'language': 'javascript',
+\   'project_root_callback': 'ale_linters#javascript#flow_ls#FindProjectRoot',
+\})
+
 " MULTIPLE ==============================================================================
 let g:multi_cursor_use_default_mapping=0
 let g:multi_cursor_next_key='<C-d>'
@@ -250,6 +269,7 @@ nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>v :vnew<CR>
 nnoremap <leader>s :set spell!<cr>
 nnoremap <leader>/ /<C-r><C-w><CR>N
+nnoremap <leader>{ mm?^[^ \t#]<CR>
 
 " TMUX ==================================================================================
 if exists('$TMUX')

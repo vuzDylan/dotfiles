@@ -9,3 +9,7 @@ function genRand () {
 function swag () {
     git commit -am "$(curl http://whatthecommit.com/index.txt 2> /dev/null)"
 }
+
+function topten () {
+    history | awk '{$1=""}{a[$0]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
+}

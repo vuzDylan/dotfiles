@@ -1,5 +1,7 @@
 export ZSH=$HOME/.oh-my-zsh
 
+source /usr/facebook/ops/rc/master.zshrc
+
 ZSH_THEME="sunrise"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
@@ -12,7 +14,8 @@ eval `dircolors ~/.dircolors`
 
 export PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-export FZF_DEFAULT_COMMAND='rg --files --follow --glob "!.git/*"'
+export FZF_ALT_C_COMMAND='fd --type d . --color=never'
+export FZF_DEFAULT_COMMAND='rg --files -g "!.git/*" -g "!scripts/*"'
 export EDITOR=$(command -v nvim)
 export VISUAL=$EDITOR
 
