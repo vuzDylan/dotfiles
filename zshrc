@@ -8,7 +8,7 @@ unsetopt AUTO_CD
 
 source $ZSH/oh-my-zsh.sh
 
-eval `dircolors ~/.dircolors`
+eval `gdircolors ~/.dircolors`
 
 export PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
@@ -43,3 +43,5 @@ source ~/.functions
 BASE16_SHELL=$HOME/.config/base16-shell/
 
 [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

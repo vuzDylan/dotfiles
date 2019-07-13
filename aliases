@@ -13,7 +13,7 @@ alias topten='print -l -- ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
 alias sl='ls'
 alias p='python'
 alias p3='python3'
-alias ls="ls --color=always"
+alias ls="gls --color=always"
 alias grep="grep --color=always"
 alias egrep="egrep --color=always"
 alias server="python -m SimpleHTTPServer 8000"
@@ -24,3 +24,4 @@ alias temp="watch -n 1 -d sensors"
 alias lines="git ls-files | xargs wc -l"
 alias ta="tmux a -t"
 alias tn="tmux new -s"
+alias devserver="mosh -6 devvm3272.prn2.facebook.com"
