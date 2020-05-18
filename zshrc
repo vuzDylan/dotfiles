@@ -12,6 +12,8 @@ source $ZSH/oh-my-zsh.sh
 
 eval `dircolors ~/.dircolors`
 
+export FB_UID="100025957034523"
+
 export PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 export FZF_ALT_C_COMMAND='fd --type d . --color=never'

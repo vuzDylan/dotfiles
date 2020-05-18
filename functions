@@ -13,3 +13,31 @@ function swag () {
 function topten () {
     history | awk '{$1=""}{a[$0]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
 }
+
+function sync_www () {
+  cd ~/fbsource/xplat/js/;
+  mv RKJSModules/Libraries/www-shared/billing2/BUCK ./TEMP;
+  rm -rf RKJSModules/Libraries/www-shared/billing2;
+  js1 upgrade www-shared -p billing --local /home/$(whoami)/www;
+  js1 upgrade www-shared -p billing_generated --local /home/$(whoami)/www;
+  mv ./TEMP RKJSModules/Libraries/www-shared/billing2/BUCK
+  js1 build relay;
+  js1 build buckfiles;
+  hg revert RKJSModules/EntryPoints/__tools__/ReactNativeMegaJSBundle.js;
+  flow;
+}
+
+function get_js_string_hashes () {
+  unset FILES
+  for FILE in "$@"
+  do
+    if [ -z "$FILES" ]; then
+      FILES="'${FILE}'"
+    else
+     FILES="${FILES}, '${FILE}'"
+    fi
+  done
+  FILES="[${FILES}]"
+
+  ~/www/scripts/intl/intl_string.php scan JsStringsExtractPlugin --pluginArgs "${FILES}" | grep --color=never "Hash :" | sed 's/\s*Hash : //g'
+}

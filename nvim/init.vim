@@ -1,5 +1,3 @@
-let g:python3_host_prog='/home/vuzdylan/virtualenvs/neovim/bin/python'
-
 " VIMPLUG ===============================================================================
 call plug#begin('~/.config/nvim/plugged')
 " FZF
@@ -7,10 +5,13 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 " Linting
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 
 " Emmet for html and jsx
 Plug 'mattn/emmet-vim'
+
+" Close tag
+Plug 'alvan/vim-closetag'
 
 " Vim surround
 Plug 'tpope/vim-surround'
@@ -29,13 +30,13 @@ Plug 'sheerun/vim-polyglot'
 Plug 'jparise/vim-graphql'
 Plug 'hhvm/vim-hack'
 
-" Autocomplete
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'wellle/tmux-complete.vim'
-
-" Filetypes
-Plug 'Shougo/context_filetype.vim'
+" Auto Complete
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'prabirshrestha/asyncomplete-buffer.vim'
+Plug 'prabirshrestha/asyncomplete-file.vim'
 
 call plug#end()
 
@@ -47,10 +48,6 @@ filetype plugin indent on
 if filereadable(expand("~/.vimrc_background"))
 	let base16colorspace=256
 	source ~/.vimrc_background
-endif
-
-if has("termguicolors")
-  set termguicolors
 endif
 
 hi Normal ctermbg=none
@@ -92,68 +89,50 @@ set mouse-=a
 " Paste toggle
 set pastetoggle=<F2>
 
-" F7 for reindent + trim whitespace
-map <F7> mzgg=G`z:%s/\s\+$//e
+" Auto completion config ================================================================
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
+nnoremap <silent> gd :LspDefinition<CR>
 
-" Let tab work in autocomlete menu
-imap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+if executable('flow')
+  au User lsp_setup call lsp#register_server({
+        \ 'name': 'flow',
+        \ 'cmd': {server_info->['flow', 'lsp', '--from', 'vim-lsp']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.flowconfig'))},
+        \ 'whitelist': ['javascript', 'javascript.jsx'],
+        \ })
+endif
+
+if executable('hh_client')
+  au User lsp_setup call lsp#register_server({
+        \ 'name': 'hh_client',
+        \ 'cmd': {server_info->['hh_client', 'lsp']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.hhconfig'))},
+        \ 'whitelist': ['php', 'hh'],
+        \ })
+endif
+
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+      \ 'name': 'buffer',
+      \ 'whitelist': ['*'],
+      \ 'priority': 10,
+      \ 'completor': function('asyncomplete#sources#buffer#completor'),
+      \ 'config': {
+      \    'max_buffer_size': -1,
+      \  },
+      \ }))
+
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+      \ 'name': 'file',
+      \ 'whitelist': ['*'],
+      \ 'priority': 15,
+      \ 'completor': function('asyncomplete#sources#file#completor')
+      \ }))
 
 " UNDO ==================================================================================
 set undodir=~/.config/nvim/undodir
 set undofile
-
-" FILETYPE ==============================================================================
-let g:context_filetype#same_filetypes = {}
-let g:context_filetype#same_filetypes.js = 'jsx'
-let g:context_filetype#same_filetypes.jsx = 'js'
-
-" NEOCLIENT ============================================================================
-let g:LanguageClient_serverCommands = {
-    \ 'hh': [ 'hh_client', 'lsp' ],
-    \ 'javascript.jsx': [ 'flow', 'lsp' ],
-    \ }
-
-nnoremap <silent> K :call LanguageClient_textDocument_hover()<CR>
-nnoremap <silent> gd :call LanguageClient_textDocument_definition({ 'gotoCmd': 'vsplit' })<CR>
-
-" DEOPLETE ==============================================================================
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-
-let g:deoplete#enable_at_startup = 1
-
-let g:deoplete#enable_camel_case = 1
-set completeopt=longest,menuone,preview
-let g:deoplete#enable_refresh_always = 1
-let g:deoplete#file#enable_buffer_path = 1
-let g:deoplete#tag#cache_limit_size = 800000
-
-let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
-let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
-let g:deoplete#omni#functions.html = 'htmlcomplete#CompleteTags'
-let g:deoplete#omni#functions.markdown = 'htmlcomplete#CompleteTags'
-
-let g:deoplete#omni_patterns = get(g:, 'deoplete#omni_patterns', {})
-let g:deoplete#omni_patterns.html = '<[^>]*'
-
-call deoplete#custom#source('LanguageClient', 'mark', '⌁')
-call deoplete#custom#source('omni', 'mark', '⌾')
-call deoplete#custom#source('member', 'mark', '.')
-call deoplete#custom#source('around', 'mark', '↻')
-call deoplete#custom#source('file', 'mark', 'F')
-call deoplete#custom#source('tag', 'mark', '⌦')
-call deoplete#custom#source('buffer', 'mark', 'ℬ')
-call deoplete#custom#source('tmux-complete', 'mark', '⊶')
-call deoplete#custom#source('syntax', 'mark', '♯')
-
-call deoplete#custom#source('LanguageClient', 'rank', 700)
-call deoplete#custom#source('omni', 'rank', 600)
-call deoplete#custom#source('member', 'rank', 550)
-call deoplete#custom#source('around', 'rank', 400)
-call deoplete#custom#source('file', 'rank', 500)
-call deoplete#custom#source('tag', 'rank', 450)
-call deoplete#custom#source('buffer', 'rank', 350)
-call deoplete#custom#source('tmux-complete', 'rank', 300)
-call deoplete#custom#source('syntax', 'rank', 200)
 
 " ALE ===================================================================================
 let g:ale_fix_on_save = 1
@@ -162,6 +141,7 @@ let g:ale_sign_warning = '*'
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_text_changed = 'normal'
 let g:ale_set_highlights = 1
+let g:ale_ignore_2_4_warnings = 1
 
 let g:ale_hack_hack_executable = 'hh'
 let g:ale_javascript_flow_executable = 'flow'
@@ -169,29 +149,24 @@ let g:ale_javascript_flow_use_global = 0
 let g:ale_javascript_flow_use_home_config = 0
 
 let g:ale_linters = {
-\   'javascript': ['eslint', 'flow'],
+\   'javascript': ['flow', 'eslint-lsp'],
+\   'javascript.jsx': ['flow', 'eslint-lsp'],
 \   'hh': ['hack', 'aurora'],
 \}
 
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'javascript': ['prettier', 'eslint'],
+\   'javascript.jsx': ['prettier', 'eslint'],
 \   'hh': ['hackfmt'],
 \}
 
-call ale#Set('eslint_exec', '/usr/local/fbpkg/nuclide/nuclide-node/latest/node-v8.9.3-linux-x64/bin/node')
-
-function! ale#handlers#eslint#GetExecutable(buffer) abort
-    return ale#Var(a:buffer, 'eslint_exec')
-endfunction
-
 call ale#linter#Define('javascript', {
 \   'name': 'eslint-lsp',
-\   'lsp': 'stdio',
-\   'executable_callback': 'ale#handlers#eslint#GetExecutable',
-\   'command': '%e /usr/local/fbpkg/nuclide/nuclide-server/production/pkg/fb-eslint-server/src/index-entry.js',
+\   'lsp': 'socket',
+\   'address': 'localhost:6012',
 \   'language': 'javascript',
-\   'project_root_callback': 'ale_linters#javascript#flow_ls#FindProjectRoot',
+\   'project_root': 'ale_linters#javascript#flow_ls#FindProjectRoot',
 \})
 
 " MULTIPLE ==============================================================================
@@ -233,8 +208,10 @@ autocmd BufWritePre *.py normal m`:%s/\s\+$//e``
 autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 
 " JAVASCRIPT ============================================================================
+let g:flow#enable = 0 "Don't type check on save vim-flow
 let g:jsx_ext_required = 0
 let g:javascript_plugin_flow = 1 "Flow Syntax From Polyglot
+autocmd BufNewFile,BufRead *.js.flow set filetype=javascript
 
 " JAVA ==================================================================================
 autocmd BufNewFile,BufRead *.java :setlocal sw=4 ts=4 sts=4
@@ -263,13 +240,18 @@ command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-h
 " LEADER ================================================================================
 let mapleader = ","
 
-inoremap <leader>, <C-x><C-o>
-
-nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>v :vnew<CR>
-nnoremap <leader>s :set spell!<cr>
 nnoremap <leader>/ /<C-r><C-w><CR>N
+nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>k vi{:sort<CR>
+nnoremap <leader>s :set spell!<cr>
+nnoremap <leader>t :tab sp<CR>
+nnoremap <leader>v :vsp<CR>
+nnoremap <leader>x :sp<CR>
 nnoremap <leader>{ mm?^[^ \t#]<CR>
+
+set rtp+=/usr/local/share/myc/vim
+" Replace with a keybind you like
+nmap <leader>n :MYC<CR>
 
 " TMUX ==================================================================================
 if exists('$TMUX')
@@ -288,11 +270,19 @@ if exists('$TMUX')
 
   nnoremap <silent> <C-h> :call TmuxOrSplitSwitch('h', 'L')<cr>
   nnoremap <silent> <C-j> :call TmuxOrSplitSwitch('j', 'D')<cr>
+  nnoremap <silent> <C-M> :call TmuxOrSplitSwitch('j', 'D')<cr>
   nnoremap <silent> <C-k> :call TmuxOrSplitSwitch('k', 'U')<cr>
   nnoremap <silent> <C-l> :call TmuxOrSplitSwitch('l', 'R')<cr>
 else
   map <C-h> <C-w>h
   map <C-j> <C-w>j
+  map <C-M> <C-w>j
   map <C-k> <C-w>k
   map <C-l> <C-w>l
 endif
+
+" CLOSE TAG ============================================================================
+let g:closetag_filenames = '*.html,*.react.js'
+let g:closetag_xhtml_filenames = '*.react.js'
+let g:closetag_shortcut = '<leader>>'
+let g:closetag_close_shortcut = '>'
