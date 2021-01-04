@@ -1,0 +1,30 @@
+{
+  "diagnostic.enableHighlightLineNumber": false,
+  "diagnostic.virtualText": true,
+  "diagnostic.errorSign": "E",
+  "diagnostic.warningSign": "W",
+  "diagnostic.infoSign": "I",
+  "diagnostic.hintSign": "H",
+  "languageserver": {
+    "flow": {
+      "command": "flow",
+      "args": ["lsp"],
+      "filetypes": ["javascript", "javascriptreact"],
+      "initializationOptions": {},
+      "requireRootPattern": true,
+      "settings": {},
+      "rootPatterns": [".flowconfig"]
+    },
+    "eslint": {
+      "command": "/usr/local/fbpkg/nuclide/vscode-nuclide-server/production/vscode-extensions/eslint/bin/node",
+      "args": ["/usr/local/fbpkg/nuclide/vscode-nuclide-server/production/vscode-extensions/eslint/src/server/index.js", "--stdio"],
+      "filetypes": ["javascript", "javascriptreact"]
+    },
+    "hack": {
+      "command": "/usr/local/bin/hh_client",
+      "args": ["lsp"],
+      "filetypes": ["hh", "hack", "php"],
+      "rootPatterns": [".hg/"]
+    }
+  }
+}
