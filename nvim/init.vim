@@ -1,45 +1,10 @@
-" VIMPLUG ===============================================================================
-call plug#begin('~/.config/nvim/plugged')
-" FZF
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+let g:coc_disable_startup_warning = 1
+let g:coc_node_path = expand("/data/users/$USER/fbsource/xplat/third-party/node/bin/node")
 
-" Linting
-Plug 'dense-analysis/ale'
+scriptencoding utf-8
+source ~/.config/nvim/plugins.vim
 
-" Emmet for html and jsx
-Plug 'mattn/emmet-vim'
-
-" Close tag
-Plug 'alvan/vim-closetag'
-
-" Vim surround
-Plug 'tpope/vim-surround'
-
-" Color schema
-Plug 'chriskempson/base16-vim'
-
-" Multiple cursors
-Plug 'terryma/vim-multiple-cursors'
-
-" TMUX Navigation
-Plug 'christoomey/vim-tmux-navigator'
-
-" Syntax plugin
-Plug 'sheerun/vim-polyglot'
-Plug 'jparise/vim-graphql'
-Plug 'hhvm/vim-hack'
-
-" Auto Complete
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'prabirshrestha/asyncomplete-buffer.vim'
-Plug 'prabirshrestha/asyncomplete-file.vim'
-
-call plug#end()
-
+" Options ===============================================================================
 syntax enable
 filetype plugin indent on
 
@@ -89,85 +54,67 @@ set mouse-=a
 " Paste toggle
 set pastetoggle=<F2>
 
-" Auto completion config ================================================================
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
-nnoremap <silent> gd :LspDefinition<CR>
+" NEOFORMAT =============================================================================
+autocmd BufWritePre *.js Neoformat
 
-if executable('flow')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'flow',
-        \ 'cmd': {server_info->['flow', 'lsp', '--from', 'vim-lsp']},
-        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.flowconfig'))},
-        \ 'whitelist': ['javascript', 'javascript.jsx'],
-        \ })
+" COC ===================================================================================
+set hidden
+set nobackup
+set nowritebackup
+set cmdheight=2
+set updatetime=300
+set shortmess+=c
+set signcolumn=yes
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+inoremap <silent><expr> <c-space> coc#refresh()
+
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 endif
 
-if executable('hh_client')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'hh_client',
-        \ 'cmd': {server_info->['hh_client', 'lsp']},
-        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.hhconfig'))},
-        \ 'whitelist': ['php', 'hh'],
-        \ })
-endif
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-      \ 'name': 'buffer',
-      \ 'whitelist': ['*'],
-      \ 'priority': 10,
-      \ 'completor': function('asyncomplete#sources#buffer#completor'),
-      \ 'config': {
-      \    'max_buffer_size': -1,
-      \  },
-      \ }))
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-      \ 'name': 'file',
-      \ 'whitelist': ['*'],
-      \ 'priority': 15,
-      \ 'completor': function('asyncomplete#sources#file#completor')
-      \ }))
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" FZF ===================================================================================
+let g:fzf_layout = { 'down': '~30%' }
+nnoremap <C-t> :Files<CR>
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
+
+set rtp+=/usr/local/share/myc/vim
+nmap <C-n> :MYC<CR>
 
 " UNDO ==================================================================================
 set undodir=~/.config/nvim/undodir
 set undofile
-
-" ALE ===================================================================================
-let g:ale_fix_on_save = 1
-let g:ale_sign_error = '-'
-let g:ale_sign_warning = '*'
-let g:ale_lint_on_insert_leave = 1
-let g:ale_lint_on_text_changed = 'normal'
-let g:ale_set_highlights = 1
-let g:ale_ignore_2_4_warnings = 1
-
-let g:ale_hack_hack_executable = 'hh'
-let g:ale_javascript_flow_executable = 'flow'
-let g:ale_javascript_flow_use_global = 0
-let g:ale_javascript_flow_use_home_config = 0
-
-let g:ale_linters = {
-\   'javascript': ['flow', 'eslint-lsp'],
-\   'javascript.jsx': ['flow', 'eslint-lsp'],
-\   'hh': ['hack', 'aurora'],
-\}
-
-let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'javascript': ['prettier', 'eslint'],
-\   'javascript.jsx': ['prettier', 'eslint'],
-\   'hh': ['hackfmt'],
-\}
-
-call ale#linter#Define('javascript', {
-\   'name': 'eslint-lsp',
-\   'lsp': 'socket',
-\   'address': 'localhost:6012',
-\   'language': 'javascript',
-\   'project_root': 'ale_linters#javascript#flow_ls#FindProjectRoot',
-\})
 
 " MULTIPLE ==============================================================================
 let g:multi_cursor_use_default_mapping=0
@@ -185,7 +132,6 @@ let g:hack#enable = 0 "Turn off vim-hack because we use LSP
 function! s:FTSetHH()
   setlocal filetype=hh
   runtime! syntax/php.vim
-  setlocal omnifunc=LanguageClient#complete
 endfunction
 
 function! s:FTDetectHH()
@@ -221,6 +167,9 @@ set matchpairs+=<:>
 let g:html_indent_tags = 'li\|p'
 autocmd BufNewFile,BufRead *.ejs set filetype=html
 
+" SNIPS =================================================================================
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
 " TABS ==================================================================================
 nnoremap tl :tabnext<CR>
 nnoremap th :tabprev<CR>
@@ -232,26 +181,16 @@ noremap <Down> <NOP>
 noremap <Left> <NOP>
 noremap <Right> <NOP>
 
-" FZF ===================================================================================
-let g:fzf_layout = { 'down': '~25%' }
-nnoremap <C-n> :Files<CR>
-command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-
 " LEADER ================================================================================
 let mapleader = ","
 
 nnoremap <leader>/ /<C-r><C-w><CR>N
 nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>f :CocFix<CR>
 nnoremap <leader>k vi{:sort<CR>
-nnoremap <leader>s :set spell!<cr>
-nnoremap <leader>t :tab sp<CR>
-nnoremap <leader>v :vsp<CR>
-nnoremap <leader>x :sp<CR>
-nnoremap <leader>{ mm?^[^ \t#]<CR>
-
-set rtp+=/usr/local/share/myc/vim
-" Replace with a keybind you like
-nmap <leader>n :MYC<CR>
+nnoremap <leader>m :!tmux send-keys -t Bottom 'meerkat' Enter<CR>
+nnoremap <leader>s :set spell!<CR>
+nnoremap <leader>d :execute "!tmux send-keys -t Bottom 'vim_fburl" . " " . expand('%') . " " . line('.') . "' Enter"<CR>
 
 " TMUX ==================================================================================
 if exists('$TMUX')
@@ -280,9 +219,3 @@ else
   map <C-k> <C-w>k
   map <C-l> <C-w>l
 endif
-
-" CLOSE TAG ============================================================================
-let g:closetag_filenames = '*.html,*.react.js'
-let g:closetag_xhtml_filenames = '*.react.js'
-let g:closetag_shortcut = '<leader>>'
-let g:closetag_close_shortcut = '>'

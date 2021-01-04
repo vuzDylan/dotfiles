@@ -25,5 +25,7 @@ alias ta="tmux a -t"
 alias tn="tmux new -s"
 alias tfs="time flow status"
 alias devOn="cp ~/www/conf/dev.php.sample ~/www/conf/dev.php && sed -i 's/\/\/ payments_use_dev_tier();/payments_use_dev_tier();/g' ~/www/conf/dev.php"
+alias testOn="cp ~/www/conf/dev.php.sample ~/www/conf/dev.php && sed -i 's/\/\/ payments_use_test_tier();/payments_use_test_tier();/g' ~/www/conf/dev.php"
 alias devOff="rm ~/www/conf/dev.php"
 alias al="arc lint"
+alias with-proxy='env http_proxy=fwdproxy:8080 https_proxy=fwdproxy:8080 no_proxy=.fbcdn.net,.facebook.com,.thefacebook.com,.tfbnw.net,.fb.com,.fburl.com,.facebook.net,.sb.fbsbx.com,localhost RSYNC_PROXY=fwdproxy:8080 HTTP_PROXY=http://fwdproxy:8080 HTTPS_PROXY=http://fwdproxy:8080'

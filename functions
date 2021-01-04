@@ -41,3 +41,7 @@ function get_js_string_hashes () {
 
   ~/www/scripts/intl/intl_string.php scan JsStringsExtractPlugin --pluginArgs "${FILES}" | grep --color=never "Hash :" | sed 's/\s*Hash : //g'
 }
+
+function vim_fburl() {
+  fburl 'https://www.internalfb.com/intern/diffusion/WWW/browsefile/master/'$1'?lines='$2
+}

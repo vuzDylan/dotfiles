@@ -27,7 +27,7 @@ KEYTIMEOUT=1
 bindkey '^?' backward-delete-char # Make backspace work
 
 # MAX_NUM FILES OPENED
-ulimit -n 4096
+ulimit -n 65535
 
 # ^Z for fg and bg vim
 foreground-vi() {
