@@ -121,9 +121,7 @@ autocmd BufWritePre *.py normal m`:%s/\s\+$//e``
 autocmd BufNewFile,BufRead *.py :setlocal sw=4 ts=4 sts=4
 
 " JAVASCRIPT ============================================================================
-let g:flow#enable = 0 "Don't type check on save vim-flow
 let g:jsx_ext_required = 0
-let g:javascript_plugin_flow = 1 "Flow Syntax From Polyglot
 
 " HTML ==================================================================================
 set matchpairs+=<:>

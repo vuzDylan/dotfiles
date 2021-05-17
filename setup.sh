@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-command -v ag >/dev/null 2>&1 || { echo "I require ag but it's not installed.  Aborting." >&2; exit 1; }
+command -v rg >/dev/null 2>&1 || { echo "I require ag but it's not installed.  Aborting." >&2; exit 1; }
 command -v git >/dev/null 2>&1 || { echo "I require git but it's not installed.  Aborting." >&2; exit 1; }
 command -v zsh >/dev/null 2>&1 || { echo "I require zsh but it's not installed.  Aborting." >&2; exit 1; }
 command -v tmux >/dev/null 2>&1 || { echo "I require tmux but it's not installed.  Aborting." >&2; exit 1; }

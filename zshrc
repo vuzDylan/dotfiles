@@ -13,7 +13,7 @@ eval `dircolors ~/.dircolors`
 
 export PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-export FZF_DEFAULT_COMMAND='ag -l --path-to-ignore ~/.ignore --nocolor --hidden -g ""'
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
 export EDITOR=$(command -v nvim)
 export VISUAL=$EDITOR
 
@@ -44,8 +44,6 @@ source ~/.functions
 BASE16_SHELL=$HOME/.config/base16-shell/
 
 [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
